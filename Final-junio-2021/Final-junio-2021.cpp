@@ -89,6 +89,8 @@ void InsertarSinRepetir(NodoListaResult* nlr, InfoResult infoInsert ) {
 
 }
 
+
+
 NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
     NodoListaResult* nr = new NodoListaResult();
     NodoListaResult* nraux = new NodoListaResult();
@@ -105,8 +107,12 @@ NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
             NodoListaResult* nraux = nr;
         }
         else {
-            while ( il.c1 == nraux->info.c1 && il.c2 == nraux->info.c2) {
-                NodoSubLista* ns = new NodoSubLista();
+            InfoResult* infoR = new InfoResult();
+            infoR->c1 = il.c1;
+            infoR->c2 = il.c2;
+            NodoSubLista* ns = new NodoSubLista();
+            while (il.c1 == nraux->info.c1 && il.c2 == nraux->info.c2) {
+
                 InfoSubLista subInfo;
                 subInfo.campo3 = il.c3;
                 subInfo.campo4 = il.c4;
@@ -114,8 +120,13 @@ NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
                 ns->sig = NULL;
 
                 InsertarSubNodo(nr->info.subLista, ns);
+
+
                 nraux = nraux->sig;
             }
+            infoR->subLista = ns;
+            InsertarSinRepetir(nr, *infoR);
+
         }
         
     }
