@@ -62,12 +62,31 @@ InfoLista Pop(NodoLista* &lista) {
     return res;
 }
 
+
 void InsertarSubNodo(NodoSubLista* lista, NodoSubLista* insert ) {
     NodoSubLista* aux = lista;
     while (aux->sig != NULL) {
         aux = aux->sig;
     }
     aux->sig = insert;
+}
+
+void InsertarSinRepetir(NodoListaResult* nlr, InfoResult infoInsert ) {
+    NodoListaResult* aux = nlr;
+    bool estaRepetido = false;
+    while (aux->sig != NULL ) {
+        estaRepetido = infoInsert.c1 == aux->info.c1 || infoInsert.c2 == aux->info.c2;
+
+        aux = aux->sig;
+    }
+    aux = nlr;
+    if (!estaRepetido) {
+        NodoListaResult* res = new NodoListaResult();
+        res->sig = NULL;
+        res->info = infoInsert;
+        aux->sig = res;
+    }
+
 }
 
 NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
