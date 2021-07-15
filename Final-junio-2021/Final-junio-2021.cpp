@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 
 //Final 13-02-2015
@@ -20,6 +21,8 @@ struct Jugador {
         pais = p;
         cantGoles = cg;
     }
+
+    Jugador() {};
 };
 
 struct JugoEn {
@@ -80,6 +83,32 @@ void escribirJugoEnFile() {
 
 }
 
+template <typename T > void read(FILE* f, T& var) {
+    T aux;
+    fread(&aux, sizeof(T), 1, f);
+    var = aux;
+}
+
+//Codificar o diagramar cargarDatosEnMemoria que reciba dos flujos binarios y que retorne o devuelva punteros 
+//a estructuras enlazadas con los datos validos de esos flujos a los efectos de facilitar las búsquedas. NodoListaJugadores*& jugadoresLista, NodoListaJugoEn*& jugoEnLista
+
+
+void cargarDatosEnMemoria( ) {
+
+    
+    FILE* f = fopen("jugadores.dat", "r+b");
+    Jugador j;
+    //read<Jugador>(f, j);
+    fread(&j, sizeof(Jugador), 1, f);
+    cout << j.nombre << endl;
+    fclose(f);
+
+    
+    
+    
+
+
+}
 
 
 
@@ -92,6 +121,10 @@ int main()
     escribirJugadoresFile();
     escribirJugoEnFile();
     */
+
+    cargarDatosEnMemoria();
+
+    
 
    
     return 0;
