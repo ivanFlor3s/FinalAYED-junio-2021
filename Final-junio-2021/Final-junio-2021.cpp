@@ -83,10 +83,10 @@ void escribirJugoEnFile() {
 
 }
 
-template <typename T > void read(FILE* f, T& var) {
+template <typename T > T read(FILE* f) {
     T aux;
     fread(&aux, sizeof(T), 1, f);
-    var = aux;
+    return aux ;
 }
 
 //Codificar o diagramar cargarDatosEnMemoria que reciba dos flujos binarios y que retorne o devuelva punteros 
@@ -97,10 +97,11 @@ void cargarDatosEnMemoria( ) {
 
     
     FILE* f = fopen("jugadores.dat", "r+b");
-    Jugador j;
-    //read<Jugador>(f, j);
-    fread(&j, sizeof(Jugador), 1, f);
-    cout << j.nombre << endl;
+ 
+    Jugador* j = new Jugador();
+
+    fread(j, sizeof(Jugador), 1, f);
+    cout << j->nombre << endl;
     fclose(f);
 
     
