@@ -24,7 +24,11 @@ struct Jugador {
 
 struct JugoEn {
     int idJugador;
-    char pais[50];
+    string pais;
+    JugoEn(int id, string p) {
+        idJugador = id;
+        pais = p;
+    }
 };
 
 struct NodoListaJugadores {
@@ -45,32 +49,51 @@ template <typename T> void writeInFile(T lista[5], char nombreFile[20])
     fclose(f);
 }
 
-
-
-
-
-int main()
-{
-    Jugador* jugador1 = new Jugador(1,"messo", 12081996,"ARG",10);
-    Jugador* jugador2 = new Jugador(2, "JAVI", 12081996, "AFR", 5);
-    Jugador* jugador3 = new Jugador(3, "refus", 12081996, "ENG", 3);
-    Jugador* jugador4 = new Jugador(4, "tom", 12081996, "URU", 3);
-    Jugador* jugador5 = new Jugador(5, "chadgi", 12081996, "BOL", 15);
+void escribirJugadoresFile() {
+    Jugador* jugador1 = new Jugador(1, "Messi", 18, "ARG", 10);
+    Jugador* jugador2 = new Jugador(2, "Neymar", 21, "BRA", 5);
+    Jugador* jugador3 = new Jugador(3, "Dibu", 20, "ARG", 3);
+    Jugador* jugador4 = new Jugador(4, "Higuain", 31, "ARG", 3);
+    Jugador* jugador5 = new Jugador(5, "Pique", 44, "ESP", 15);
 
     Jugador jugadores[5] = {
         *jugador1,*jugador2, *jugador3, *jugador4, *jugador5
     };
     char nombreFile[20] = "jugadores.dat";
     writeInFile<Jugador>(jugadores, nombreFile);
+}
 
-    FILE* f = fopen("jugadores.dat", "r+b");
-    Jugador* jugLeido = new Jugador(5, "s", 1, "s", 15);
+void escribirJugoEnFile() {
 
-    fseek(f, sizeof(Jugador) * 3, SEEK_SET);
+    JugoEn* jugo1 = new JugoEn(1, "ARG");
+    JugoEn* jugo2 = new JugoEn(2, "BRA");
+    JugoEn* jugo3 = new JugoEn(3, "BOL");
+    JugoEn* jugo4 = new JugoEn(4, "ARG");
+    JugoEn* jugo5 = new JugoEn(5, "ESP");
 
-    fread(jugLeido, sizeof(Jugador), 1, f);
-    fclose(f);
-    cout<< jugLeido->nombre <<endl;
+    JugoEn lista[5] = {
+        *jugo1,*jugo2,*jugo3, *jugo4, *jugo5
+    };
+    char nombreFile[20] = "jugoEn.dat";
+    writeInFile<JugoEn>(lista, nombreFile);
+
+
+}
+
+
+
+
+
+int main()
+{
+
+   /*
+   CREACION DE ARCHIVOS
+    escribirJugadoresFile();
+    escribirJugoEnFile();
+    */
+
+   
     return 0;
 };
 
