@@ -32,6 +32,7 @@ struct JugoEn {
         idJugador = id;
         pais = p;
     }
+    JugoEn() {};
 };
 
 struct NodoListaJugadores {
@@ -93,22 +94,96 @@ template <typename T > T read(FILE* f) {
 //a estructuras enlazadas con los datos validos de esos flujos a los efectos de facilitar las búsquedas. NodoListaJugadores*& jugadoresLista, NodoListaJugoEn*& jugoEnLista
 
 
-void cargarDatosEnMemoria( ) {
+void insertarNodoJugador(Jugador jugador, NodoListaJugadores* &lista) {
 
-    
+
+    NodoListaJugadores* njug = new NodoListaJugadores();
+    njug->info = jugador;
+    njug->sig = lista;
+
+    lista = njug;
+
+}
+
+void insertarNodoJugoEn(JugoEn jugo, NodoListaJugoEn*& lista) {
+
+
+    NodoListaJugoEn* nodo = new NodoListaJugoEn();
+    nodo->info = jugo;
+    nodo->sig = lista;
+
+    lista = nodo;
+
+}
+
+void insertarPrimerNodo(JugoEn jugo, NodoListaJugoEn*& lista) {
+    NodoListaJugoEn* nodo = new NodoListaJugoEn();
+    nodo->info = jugo;
+    nodo->sig = NULL;
+
+    lista = nodo;
+
+}
+
+void insertarPrimerNodo(Jugador jugador, NodoListaJugadores*& lista) {
+    NodoListaJugadores* njug = new NodoListaJugadores();
+    njug->info = jugador;
+    njug->sig = NULL;
+
+    lista = njug;
+}
+
+void cargarDatosEnMemoria(NodoListaJugadores* &lista, NodoListaJugoEn* &listaJugoEn ) {
+
+    //CARGAR JUGADORES
     FILE* f = fopen("jugadores.dat", "r+b");
  
     Jugador* j = new Jugador();
 
     fread(j, sizeof(Jugador), 1, f);
-    cout << j->nombre << endl;
+
+    insertarPrimerNodo(*j,lista);
+
+    cout <<"Se cargo el jugador: "<< j->nombre << endl;
+
+
+    while (!feof(f)) {
+        Jugador* j = new Jugador();
+        fread(j, sizeof(Jugador), 1, f);
+        if (j->nombre != "") {
+
+            insertarNodoJugador(*j, lista);
+            cout << "Se cargo el jugador: " << j->nombre << endl;
+        }
+    }
+
     fclose(f);
 
-    
-    
-    
+    //CARGAR JUGO EN
 
 
+
+    FILE* fe = fopen("jugoEn.dat", "r+b");
+
+    JugoEn* je = new JugoEn();
+
+    fread(je, sizeof(JugoEn), 1, fe);
+
+    insertarPrimerNodo(*je, listaJugoEn);
+    cout << "Se cargo el jugo de: " << je->pais << endl;
+
+    while (!feof(fe)) {
+
+        JugoEn* je = new JugoEn();
+        fread(je, sizeof(JugoEn), 1, fe);
+
+        if (je->pais != "") {
+
+            insertarNodoJugoEn(*je, listaJugoEn);
+            cout << "Se cargo el jugo de: " << je->pais << endl;
+        }
+    }
+    fclose(fe);
 }
 
 
@@ -122,8 +197,9 @@ int main()
     escribirJugadoresFile();
     escribirJugoEnFile();
     */
-
-    cargarDatosEnMemoria();
+    NodoListaJugadores* listaJugadores = new NodoListaJugadores();
+    NodoListaJugoEn* listaJugoEn = new NodoListaJugoEn();
+    cargarDatosEnMemoria(listaJugadores, listaJugoEn);
 
     
 
