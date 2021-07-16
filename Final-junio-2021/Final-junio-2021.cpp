@@ -213,7 +213,14 @@ int main()
     NodoListaJugoEn* listaJugoEn = new NodoListaJugoEn();
     cargarDatosEnMemoria(listaJugadores, listaJugoEn);
 
+    NodoListaJugadores* aux = listaJugadores;
+    while (aux->sig != NULL) {
+        if (JugoEnOtraSeleccion(aux->info, listaJugoEn)) {
+            cout << "Alto vendido este " << aux->info.nombre << endl;
+        }
 
+        aux = aux->sig;
+    }
 
     
    
