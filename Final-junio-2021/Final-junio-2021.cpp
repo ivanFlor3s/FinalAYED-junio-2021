@@ -160,9 +160,6 @@ void cargarDatosEnMemoria(NodoListaJugadores* &lista, NodoListaJugoEn* &listaJug
     fclose(f);
 
     //CARGAR JUGO EN
-
-
-
     FILE* fe = fopen("jugoEn.dat", "r+b");
 
     JugoEn* je = new JugoEn();
@@ -186,6 +183,20 @@ void cargarDatosEnMemoria(NodoListaJugadores* &lista, NodoListaJugoEn* &listaJug
     fclose(fe);
 }
 
+bool JugoEnOtraSeleccion(Jugador jugador, NodoListaJugoEn* lista ) {
+    bool jugoEnOtra = false;
+    NodoListaJugoEn* aux = lista;
+
+    while (!jugoEnOtra && aux->sig != NULL) {
+        
+        if (jugador.idJugador == aux->info.idJugador) {
+            jugoEnOtra = aux->info.pais != jugador.pais;
+        }
+        aux = aux->sig;
+    }
+    return jugoEnOtra;
+}
+
 
 
 
@@ -197,12 +208,15 @@ int main()
     escribirJugadoresFile();
     escribirJugoEnFile();
     */
+
     NodoListaJugadores* listaJugadores = new NodoListaJugadores();
     NodoListaJugoEn* listaJugoEn = new NodoListaJugoEn();
     cargarDatosEnMemoria(listaJugadores, listaJugoEn);
 
-    
 
+
+    
+   
    
     return 0;
 };
