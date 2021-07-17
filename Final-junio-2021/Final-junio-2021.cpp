@@ -197,6 +197,9 @@ bool JugoEnOtraSeleccion(Jugador jugador, NodoListaJugoEn* lista ) {
     return jugoEnOtra;
 }
 
+bool puedeSerCitado(Jugador jugador, NodoListaJugoEn* lista) {
+    return jugador.fechaNacimiento < 30 && !JugoEnOtraSeleccion(jugador, lista);
+}
 
 
 
@@ -214,13 +217,28 @@ int main()
     cargarDatosEnMemoria(listaJugadores, listaJugoEn);
 
     NodoListaJugadores* aux = listaJugadores;
+
+    
+
+    aux = listaJugadores;
     while (aux->sig != NULL) {
         if (JugoEnOtraSeleccion(aux->info, listaJugoEn)) {
             cout << "Alto vendido este " << aux->info.nombre << endl;
         }
-
         aux = aux->sig;
     }
+
+    aux = listaJugadores;
+
+    while (aux->sig != NULL) {
+        if (puedeSerCitado(aux->info, listaJugoEn)) {
+            cout << "Mete a este scaloniiiii: " << aux->info.nombre << endl;
+        }
+        aux = aux->sig;
+
+    }
+
+
 
     
    
