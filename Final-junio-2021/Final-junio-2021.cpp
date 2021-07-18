@@ -212,7 +212,7 @@ int main()
     escribirJugoEnFile();
     */
 
-    NodoListaJugadores* listaJugadores = new NodoListaJugadores();
+    /*NodoListaJugadores* listaJugadores = new NodoListaJugadores();
     NodoListaJugoEn* listaJugoEn = new NodoListaJugoEn();
     cargarDatosEnMemoria(listaJugadores, listaJugoEn);
 
@@ -236,7 +236,23 @@ int main()
         }
         aux = aux->sig;
 
-    }
+    }*/
+
+    int a = 30;
+    //OPERADOR DE DIRECCION : anteponer & a una variable me da la direccion de memoria donde esta esa variable
+    cout << "Direccion de a: " << &a << endl;
+
+    //Direccion de a
+    int* p = &a;
+    cout << "Valor puntero: " << p << endl;
+
+    //OPERADOR DE CONTENIDO: Si a una variable de tipo puntero antepongo * me da el CONTENIDO que se aloja en esa direccion que indica la variable
+    cout << "Valor de a por direccion: " << *p << endl;
+
+    //Direccion de la direccion de a
+    int** q = &p;
+    cout << "Valor de la direccion de la direccion del entero a: " << q <<endl;
+
 
 
 
