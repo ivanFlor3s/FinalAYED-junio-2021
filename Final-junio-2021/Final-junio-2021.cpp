@@ -19,19 +19,25 @@ struct Nodo
 };
 
 
-void agregarNodoAlFinal(Nodo* lista, int infor) {
+void agregarNodoAlfinal(Nodo*& lista, int infor) {
     Nodo* nuevo = new Nodo();
     nuevo->info = infor;
     nuevo->sig = NULL;
 
-    Nodo* aux = lista;
-
-    //Itero hasta llegar al ultimo
-    while (aux->sig != NULL) {
-
-        aux = aux->sig;
+    if (lista == NULL) {
+        lista = nuevo;
     }
-    aux->sig = nuevo;
+    else {
+
+        Nodo* aux = lista;
+
+        //Itero hasta llegar al ultimo
+        while (aux->sig != NULL) {
+
+            aux = aux->sig;
+        }
+        aux->sig = nuevo;
+    }
 }
 
 void mostrarLista(Nodo* l) {
@@ -41,6 +47,14 @@ void mostrarLista(Nodo* l) {
     while (aux != NULL) {
         cout << aux->info << endl;
         aux = aux->sig;
+    }
+}
+
+void liberarLista(Nodo*& p) {
+    while (p != NULL) {
+        Nodo* n = p;
+        delete p;
+        p = n->sig;
     }
 }
 
@@ -87,7 +101,19 @@ int main()
 
     // ESTRUCTURA DINAMICA, ejemplo Nodo
     
+    cout << endl << "ESTRUCTURA DINAMICA" << endl;
 
+    Nodo* pointer = NULL;
+    agregarNodoAlfinal(pointer, 2);
+    agregarNodoAlfinal(pointer, 23);
+    agregarNodoAlfinal(pointer, 12);
+    agregarNodoAlfinal(pointer, 22);
+    agregarNodoAlfinal(pointer, 3212);
+    agregarNodoAlfinal(pointer, 52);
+    agregarNodoAlfinal(pointer, 112);
+
+    mostrarLista(pointer);
+    liberarLista(pointer);
 
     return 0;
 };
