@@ -26,11 +26,22 @@ void agregarNodoAlFinal(Nodo* lista, int infor) {
 
     Nodo* aux = lista;
 
+    //Itero hasta llegar al ultimo
     while (aux->sig != NULL) {
 
         aux = aux->sig;
     }
     aux->sig = nuevo;
+}
+
+void mostrarLista(Nodo* l) {
+    Nodo* aux = l;
+
+    //Itero hasta que se termine la lista
+    while (aux != NULL) {
+        cout << aux->info << endl;
+        aux = aux->sig;
+    }
 }
 
 int main()
