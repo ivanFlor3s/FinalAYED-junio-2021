@@ -11,6 +11,28 @@ struct Producto
 
 };
 
+
+struct Nodo
+{
+    int info;
+    Nodo* sig;
+};
+
+
+void agregarNodoAlFinal(Nodo* lista, int infor) {
+    Nodo* nuevo = new Nodo();
+    nuevo->info = infor;
+    nuevo->sig = NULL;
+
+    Nodo* aux = lista;
+
+    while (aux->sig != NULL) {
+
+        aux = aux->sig;
+    }
+    aux->sig = nuevo;
+}
+
 int main()
 {
 
@@ -51,6 +73,10 @@ int main()
     (*prod).price = 50;
 
     cout << "Producto, precio: " << (*prod).price << " - " << prod->name << endl;
+
+    // ESTRUCTURA DINAMICA, ejemplo Nodo
+    
+
 
     return 0;
 };
