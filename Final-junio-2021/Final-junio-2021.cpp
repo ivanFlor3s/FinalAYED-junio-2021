@@ -3,11 +3,85 @@
 #include <stdlib.h>
 using namespace std;
 
-
-
 //Link del ejercicio: https://www.youtube.com/watch?v=F_ikRFhRTv0&list=PLfvyG2RxJZsaiWvkM_Cat0obF3VSmo4UQ&index=24
+
+struct TipoInfraccion {
+	int id;
+	string descripcion;
+	int importe;
+	int diasPp;
+	int dtoPp;
+};
+
+struct Infraccion {
+	string patente;
+	int fecha;
+	int idTipoInfraccion;
+};
+
+
+
+void cargarTiposInfraccion(TipoInfraccion colTipos[50]) {
+	//Carga del usaurio para los tipos de infraccion
+ }
+
+Infraccion leerInfraccion() {
+	Infraccion i;
+	cout << "Ingrese infraccion" << endl <<"Patente - Fecha - Id"<<endl;
+	cin >> i.patente >> i.fecha >> i.idTipoInfraccion;
+	return i;
+
+}
+
+TipoInfraccion buscarTipo(int idTipo, TipoInfraccion colTipos[50]) {
+	int i = 0;
+	for (i ; i < 50; i++) {
+		if (colTipos[i].id == idTipo) {
+			return colTipos[i];
+		}		
+	}
+}
+
 int main()
 {
-		
+
+	Infraccion colInfracciones[50];
+	TipoInfraccion colTipos[50];
+	cargarTiposInfraccion(colTipos);
+
+	int fechaHoy = 30;
+
+	
+	Infraccion infraccion = leerInfraccion();
+
+	//Corto cuando se ingrese una patente con Id Negativo o igual a 0
+	while (infraccion.idTipoInfraccion > 0) {
+
+		string patenteAnterior = infraccion.patente;
+		cout << "Patente: " << infraccion.patente << endl;
+		double TotalImportes = 0;
+		double TotalDescuentos = 0;
+		//Itero mientras este leyendo infraciones con la misma patente
+		while (patenteAnterior == infraccion.patente) {
+
+			TipoInfraccion t =  buscarTipo(infraccion.idTipoInfraccion, colTipos);
+			int descuento = ((fechaHoy - infraccion.fecha) > t.diasPp) ? t.dtoPp * t.importe : 0;
+			int total = t.importe - descuento;
+			//Imprimir los resultados por cada lectura
+			cout << "Fecha: " << infraccion.fecha << " - Valor" << t.importe << 
+				" - Descuento " << descuento << " - Total" << total << endl;
+			TotalImportes += total;
+			infraccion = leerInfraccion();
+			
+		}
+		cout << "TOTAL IMPORTES: " << TotalImportes << endl;
+		cout << "TOTAL DESCUENTOS: " << TotalDescuentos << endl;
+		cout << "TOTAL TOTALES: " << TotalImportes - TotalDescuentos << endl;
+		cout<< "----------------------" << endl;
+
+
+	}
+
+
 };
 
