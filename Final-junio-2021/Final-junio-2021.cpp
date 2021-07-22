@@ -1,154 +1,123 @@
-// Final-junio-2021.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
-//
-
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 
-struct InfoLista
-{
-    int c1;
-    char c2;
-    float c3;
-    int c4;
+//Link del ejercicio: https://www.youtube.com/watch?v=F_ikRFhRTv0&list=PLfvyG2RxJZsaiWvkM_Cat0obF3VSmo4UQ&index=24
 
-};
-struct NodoLista {
-    InfoLista infoLista;
-    NodoLista* sig;
-
+struct TipoInfraccion {
+	int id;
+	string descripcion;
+	int importe;
+	int diasPp;
+	int dtoPp;
 };
 
-struct InfoSubLista
-{
-    float campo3;
-    int campo4;
-
-
+struct Infraccion {
+	string patente;
+	int fecha;
+	int idTipoInfraccion;
 };
 
-struct NodoSubLista
-{
-    InfoSubLista infSub;
-    NodoSubLista* sig;
-
-};
-
-struct InfoResult {
-    int c1;
-    char c2;
-    NodoSubLista* subLista;
-};
-
-struct NodoListaResult
-{
-    InfoResult info;
-    NodoListaResult* sig;
+struct Estadistica {
+	int dia;
+	int cantidad = 0;
+	int Total = 0;
+	bool acceso = false;
 };
 
 
-InfoLista Pop(NodoLista* &lista) {
-    //Guardo valor que voy a devolver
-    InfoLista res = lista->infoLista;
+void cargarTiposInfraccion(TipoInfraccion colTipos[50]) {
+	
+ }
 
-    //Guardo Lista en auxiliar
-    NodoLista* aux = lista;
 
-    //Lista ahora empieza en el siguiente
-    lista = aux->sig;
 
-    //Borro el que ya saque
-    delete aux;
+Infraccion leerInfraccion() {
+	Infraccion i;
+	cout << "Ingrese infraccion" << endl <<"Patente - Fecha - Id"<<endl;
+	cin >> i.patente >> i.fecha >> i.idTipoInfraccion;
+	return i;
 
-    return res;
 }
 
-
-void InsertarSubNodo(NodoSubLista* lista, NodoSubLista* insert ) {
-    NodoSubLista* aux = lista;
-    while (aux->sig != NULL) {
-        aux = aux->sig;
-    }
-    aux->sig = insert;
-}
-
-void InsertarSinRepetir(NodoListaResult* nlr, InfoResult infoInsert ) {
-    NodoListaResult* aux = nlr;
-    bool estaRepetido = false;
-    while (aux->sig != NULL ) {
-        estaRepetido = infoInsert.c1 == aux->info.c1 || infoInsert.c2 == aux->info.c2;
-
-        aux = aux->sig;
-    }
-    aux = nlr;
-    if (!estaRepetido) {
-        NodoListaResult* res = new NodoListaResult();
-        res->sig = NULL;
-        res->info = infoInsert;
-        aux->sig = res;
-    }
-
+TipoInfraccion buscarTipo(int idTipo, TipoInfraccion colTipos[50]) {
+	int i = 0;
+	for (i ; i < 50; i++) {
+		if (colTipos[i].id == idTipo) {
+			return colTipos[i];
+		}		
+	}
 }
 
 
 
-NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
-    NodoListaResult* nr = new NodoListaResult();
-    NodoListaResult* nraux = new NodoListaResult();
-    bool primerNodo = true;
-    while (lista->sig != NULL) {
-        InfoLista il = Pop(lista);
-        if (primerNodo) {
-            nr->info.c1 = il.c1;
-            nr->info.c2 = il.c2;
-            NodoSubLista* nsl = new NodoSubLista();
-            nsl->infSub.campo3 = il.c3;
-            nsl->infSub.campo4 = il.c4;
-            nr->info.subLista = nsl;
-            NodoListaResult* nraux = nr;
-        }
-        else {
-            InfoResult* infoR = new InfoResult();
-            infoR->c1 = il.c1;
-            infoR->c2 = il.c2;
-            NodoSubLista* ns = new NodoSubLista();
-            while (il.c1 == nraux->info.c1 && il.c2 == nraux->info.c2) {
-
-                InfoSubLista subInfo;
-                subInfo.campo3 = il.c3;
-                subInfo.campo4 = il.c4;
-                ns->infSub = subInfo;
-                ns->sig = NULL;
-
-                InsertarSubNodo(nr->info.subLista, ns);
-
-
-                nraux = nraux->sig;
-            }
-            infoR->subLista = ns;
-            InsertarSinRepetir(nr, *infoR);
-
-        }
-        
-    }
-
-
-    return nr;
+void agregarEstadistica(int dia, int importe, Estadistica estadisticas[31]) {
+	estadisticas[dia].acceso = true;
+	estadisticas[dia].cantidad += 1;
+	estadisticas[dia].Total += importe;
 }
-
 
 int main()
 {
-    NodoLista* nl = new NodoLista();
-    InfoLista* il = new InfoLista();
-    il->c1 = 2;
-    il->c2 = 'C';
-    il->c3 = 2;
-    il->c4 = 32;
 
-    nl->infoLista = *il;
+	Infraccion colInfracciones[50];
+	TipoInfraccion colTipos[50];
+	cargarTiposInfraccion(colTipos);
 
-    
+	int fechaHoy = 30;
 
-    return 0;
+	Estadistica estadisticas[31];
+	
+	Infraccion infraccion = leerInfraccion();
+
+	//Corto cuando se ingrese una patente con Id Negativo o igual a 0
+	while (infraccion.idTipoInfraccion > 0) {
+
+		string patenteAnterior = infraccion.patente;
+		cout << "Patente: " << infraccion.patente << endl;
+		double TotalImportes = 0;
+		double TotalDescuentos = 0;
+		//Itero mientras este leyendo infraciones con la misma patente
+		while (patenteAnterior == infraccion.patente) {
+
+			TipoInfraccion t =  buscarTipo(infraccion.idTipoInfraccion, colTipos);
+			int descuento = ((fechaHoy - infraccion.fecha) > t.diasPp) ? t.dtoPp * t.importe : 0;
+			int total = t.importe - descuento;
+
+			//Imprimir los resultados por cada lectura
+			cout << "Fecha: " << infraccion.fecha << " - Valor" << t.importe << 
+				" - Descuento " << descuento << " - Total" << total << endl;
+			TotalImportes += total;
+			infraccion = leerInfraccion();
+
+			agregarEstadistica(infraccion.fecha, t.importe, estadisticas);
+			
+		}
+
+		cout << "TOTAL IMPORTES: " << TotalImportes << endl;
+		cout << "TOTAL DESCUENTOS: " << TotalDescuentos << endl;
+		cout << "TOTAL TOTALES: " << TotalImportes - TotalDescuentos << endl;
+		cout<< "----------------------" << endl;
+
+
+	}
+
+	cout << endl << endl << "punto 2";
+	cout << "Dia - Cantidad - Total" << endl;
+
+	double acumTotales = 0;
+	int acumCant = 0;
+	for (int j = 0; j < 50; j++) {
+		if (estadisticas[j].acceso) {
+			acumCant += estadisticas[j].cantidad;
+			acumTotales += estadisticas[j].Total;
+			cout << estadisticas[j].dia << "-" << estadisticas[j].cantidad << " - " << estadisticas[j].Total << endl;
+		}
+	}
+
+	cout << "FIN------------------------------------------------------------------------";
+
+
 };
 
