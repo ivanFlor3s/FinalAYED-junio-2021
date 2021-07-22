@@ -19,11 +19,24 @@ struct Infraccion {
 	int idTipoInfraccion;
 };
 
+struct Estadistica {
+	int dia;
+	int cantidad = 0;
+	int Total = 0;
+	bool acceso = false;
+};
+
+void crearArchivoTipos() {
+
+	FILE* f = fopen("tiposInfracciones.dat", "w+b");
+}
 
 
 void cargarTiposInfraccion(TipoInfraccion colTipos[50]) {
-	//Carga del usaurio para los tipos de infraccion
+	
  }
+
+
 
 Infraccion leerInfraccion() {
 	Infraccion i;
@@ -42,6 +55,14 @@ TipoInfraccion buscarTipo(int idTipo, TipoInfraccion colTipos[50]) {
 	}
 }
 
+
+
+void agregarEstadistica(int dia, int importe, Estadistica estadisticas[31]) {
+	estadisticas[dia].acceso = true;
+	estadisticas[dia].cantidad += 1;
+	estadisticas[dia].Total += importe;
+}
+
 int main()
 {
 
@@ -51,6 +72,7 @@ int main()
 
 	int fechaHoy = 30;
 
+	Estadistica estadisticas[31];
 	
 	Infraccion infraccion = leerInfraccion();
 
@@ -67,13 +89,17 @@ int main()
 			TipoInfraccion t =  buscarTipo(infraccion.idTipoInfraccion, colTipos);
 			int descuento = ((fechaHoy - infraccion.fecha) > t.diasPp) ? t.dtoPp * t.importe : 0;
 			int total = t.importe - descuento;
+
 			//Imprimir los resultados por cada lectura
 			cout << "Fecha: " << infraccion.fecha << " - Valor" << t.importe << 
 				" - Descuento " << descuento << " - Total" << total << endl;
 			TotalImportes += total;
 			infraccion = leerInfraccion();
+
+			agregarEstadistica(infraccion.fecha, t.importe, estadisticas);
 			
 		}
+
 		cout << "TOTAL IMPORTES: " << TotalImportes << endl;
 		cout << "TOTAL DESCUENTOS: " << TotalDescuentos << endl;
 		cout << "TOTAL TOTALES: " << TotalImportes - TotalDescuentos << endl;
@@ -81,6 +107,16 @@ int main()
 
 
 	}
+
+	cout << endl << endl << "punto 2";
+	cout << "Dia - Cantidad - Total" << endl;
+	for (int j = 0; j < 50; j++) {
+		if (estadisticas[j].acceso) {
+			cout << estadisticas[j].dia << "-" << estadisticas[j].cantidad << " - " << estadisticas[j].Total << endl;
+		}
+	}
+
+	cout << "FIN------------------------------------------------------------------------";
 
 
 };
