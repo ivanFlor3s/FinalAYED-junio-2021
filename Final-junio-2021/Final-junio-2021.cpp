@@ -26,11 +26,6 @@ struct Estadistica {
 	bool acceso = false;
 };
 
-void crearArchivoTipos() {
-
-	FILE* f = fopen("tiposInfracciones.dat", "w+b");
-}
-
 
 void cargarTiposInfraccion(TipoInfraccion colTipos[50]) {
 	
@@ -110,8 +105,13 @@ int main()
 
 	cout << endl << endl << "punto 2";
 	cout << "Dia - Cantidad - Total" << endl;
+
+	double acumTotales = 0;
+	int acumCant = 0;
 	for (int j = 0; j < 50; j++) {
 		if (estadisticas[j].acceso) {
+			acumCant += estadisticas[j].cantidad;
+			acumTotales += estadisticas[j].Total;
 			cout << estadisticas[j].dia << "-" << estadisticas[j].cantidad << " - " << estadisticas[j].Total << endl;
 		}
 	}
