@@ -13,10 +13,16 @@ Tambien subi algunas cosas de punteros con comentarios
 Video de consigna y resolucion de Pablo:  [Video en youtube](https://www.youtube.com/watch?v=F_ikRFhRTv0&list=PLfvyG2RxJZsaiWvkM_Cat0obF3VSmo4UQ&index=24)
 
 * Version en codigo de la solucion
-* Por el momento no hice el codigo como para que compile
+* Por el momento no hice el codigo como para que compile (No tengo la logica que genera los archivos)
+
+## AYE2018 (Integr) - Compania de Aviacion
+Video de consigna y resolucion de Pablo:  [Video en youtube](https://www.youtube.com/watch?v=DXxMNCOZf3Q&list=PLfvyG2RxJZsaiWvkM_Cat0obF3VSmo4UQ&index=26)
+
+* Version en codigo de la solucion
+* Por el momento no hice el codigo como para que compile  (No tengo la logica que genera los archivos)
+
 
 
 Voy a estar haciendo todos los que pueda para practicar
 
-# Quiero tener este codigo
-No se si es apto para Eclipse, estuve trabajando con Visual studio 2019 para la creacion de la solucion que contiene el proyecto. En todo caso entiendo que el codigo deberia tambien andar en eclipse
+La mayor parte del codigo esta en el archivo **Final junio 2021**, hay un branch porcada ejercicio que hice por lo que es necesario entrar el branch de X ejercicio para ver su solucion en ese mismo archivo
