@@ -29,12 +29,23 @@ struct TadListaCiudades {
 		//Llenar con datos la lista
 	}
 
-	Ciudad buscarCiudad(int idCiudad) {
+	void imprimirResultados() {
+		Nodo<InfoCiudad>* aux = lista;
+
+		while (aux != NULL) {
+			cout << "Ciudad " << aux->info.ciudad.descripcion << 
+				" - Grupos que la eligen como destino: " << 
+				aux->info.cantFamiliasComoDestino << endl;
+			aux = aux->sig;
+		}
+	}
+
+	Nodo<InfoCiudad>* buscarCiudad(int idCiudad) {
 		Nodo<InfoCiudad>* aux = lista;
 
 		while (aux != NULL) {
 			if (aux->info.ciudad.idCiudad == idCiudad) {
-				return aux->info.ciudad;
+				return aux;
 			}
 			aux = aux->sig;
 		}
@@ -52,6 +63,7 @@ struct Vuelo {
 struct InfoVuelo
 {
 	Vuelo vuelo;
+	int reservados = 0;
 	int rechazadas = 0;
 	bool esCompleto = false;
 };
@@ -68,6 +80,16 @@ struct TadVuelos {
 		//Completar lista con Vuelos
 	}
 
+	void imprimirResultados() {
+		NodoVuelo* aux = lista;
+		while (aux != NULL) {
+			cout << "IdVuelo: " << aux->info.vuelo.idVuelo <<
+				" - Rechazados" << aux->info.rechazadas <<
+				"Completo? " << (aux->info.esCompleto ? "SI" : "NO") << endl;
+			aux = aux->sig;
+		}
+	}
+
 	NodoVuelo* buscarVuelo(int idVuelo) {
 		NodoVuelo* aux = lista;
 
@@ -76,6 +98,26 @@ struct TadVuelos {
 				return aux;
 			}
 			aux = aux->sig;
+		}
+	}
+
+	bool puedeReservar(int cant, NodoVuelo* vuelo) {
+		if (vuelo->info.esCompleto) {
+			return false;
+		}
+		return vuelo->info.reservados + cant <= vuelo->info.vuelo.capacidad;
+	}
+
+	bool reservarVuelo(int cant, NodoVuelo* vuelo) {
+		if (puedeReservar(cant, vuelo)) {
+
+			vuelo->info.reservados += cant;
+			vuelo->info.esCompleto = vuelo->info.reservados == vuelo->info.vuelo.capacidad;
+			return true;
+		}
+		else {
+			vuelo->info.rechazadas += 1;
+			return false;
 		}
 	}
 };
@@ -160,24 +202,8 @@ Reserva leerReserva() {
 int main()
 {
 
-	 /*
-	 *  Tengo los 2 archivos de consulta (Vuelos y ciudades) en memoria
-	 *	Leo las reservas (idcliente, idVuelo, cant)
-	 *		Conzco a mis clientes, y los ubico en una lista junto con sus vuelos
-	 *			En una lista de vuelos agrego los vuelos
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-
-	//Inicializo lista de clientes
+	//Inicializo TADS
 	TadListaClientes listaClientes;
-	listaClientes.lista = NULL;
 
 	TadListaCiudades ciudades;
 	TadVuelos vuelos ;
@@ -185,20 +211,33 @@ int main()
 
 	Reserva reserva = leerReserva();
 	while (reserva.idCliente > 0) {
+
+		NodoCliente * nCliente = listaClientes.buscarAgregarCliente(reserva.idCliente);
 		
 		NodoVuelo* v = vuelos.buscarVuelo(reserva.idVuelo);
 
-		Ciudad ciudadOrigen = ciudades.buscarCiudad(v->info.vuelo.idOrigen);
-		Ciudad ciudadDestino = ciudades.buscarCiudad(v->info.vuelo.idDestino);
-
-
-
+		if (vuelos.reservarVuelo(reserva.cantidad, v)) {
+			Nodo<InfoCiudad>* ciudadOrigen = ciudades.buscarCiudad(v->info.vuelo.idOrigen);
+			Nodo<InfoCiudad>* ciudadDestino = ciudades.buscarCiudad(v->info.vuelo.idDestino);
+			//Considero que si se reservan mas de 2 es una familia
+			if (reserva.cantidad > 2) {
+				ciudadDestino->info.cantFamiliasComoDestino += 1;
+			}
+			nCliente->info.millasAcumuladas += abs(ciudadOrigen->info.ciudad.millas - ciudadDestino->info.ciudad.millas);
+		}
 
 		reserva = leerReserva();
 	}
 
 
+	//Punto 1
+	listaClientes.informarMillas();
 
+	//Punto 2
+	ciudades.imprimirResultados();
+
+	//Punto 3
+	vuelos.imprimirResultados();
 
 };
 
