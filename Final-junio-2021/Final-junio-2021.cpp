@@ -4,10 +4,200 @@
 
 using namespace std;
 
+//Link del video https://www.youtube.com/watch?v=DXxMNCOZf3Q&list=PLfvyG2RxJZsaiWvkM_Cat0obF3VSmo4UQ&index=26
+
+template <class T>
+struct Nodo {
+	T info;
+	Nodo<T>* sig;
+};
+
+struct Ciudad {
+	int idCiudad;
+	string descripcion;
+	int millas;
+};
+
+struct InfoCiudad {
+	Ciudad ciudad;
+	int cantFamiliasComoDestino = 0;
+};
+
+struct TadListaCiudades {
+	Nodo<InfoCiudad>* lista;
+	void inicializar() {
+		//Llenar con datos la lista
+	}
+
+	Ciudad buscarCiudad(int idCiudad) {
+		Nodo<InfoCiudad>* aux = lista;
+
+		while (aux != NULL) {
+			if (aux->info.ciudad.idCiudad == idCiudad) {
+				return aux->info.ciudad;
+			}
+			aux = aux->sig;
+		}
+	}
+};
+
+
+
+struct Vuelo {
+	int idVuelo;
+	int capacidad;
+	int idOrigen; //id ciudad origen
+	int idDestino; //id ciudad destino
+};
+struct InfoVuelo
+{
+	Vuelo vuelo;
+	int rechazadas = 0;
+	bool esCompleto = false;
+};
+struct NodoVuelo
+{
+	InfoVuelo info;
+	NodoVuelo* sig;
+};
+
+struct TadVuelos {
+	NodoVuelo* lista;
+	
+	void inicializarLista() {
+		//Completar lista con Vuelos
+	}
+
+	NodoVuelo* buscarVuelo(int idVuelo) {
+		NodoVuelo* aux = lista;
+
+		while (aux != NULL) {
+			if (aux->info.vuelo.idVuelo == idVuelo) {
+				return aux;
+			}
+			aux = aux->sig;
+		}
+	}
+};
+
+
+
+struct Reserva {
+	int idCliente;
+	int idVuelo;
+	int cantidad;
+};
+
+struct NodoCliente
+{
+	InfoCliente info;
+	NodoCliente* sig;
+};
+
+struct InfoCliente
+{
+	int idCliente;
+	int millasAcumuladas = 0;
+};
+
+struct TadListaClientes {
+	NodoCliente* lista;
+
+	void informarMillas() {
+		NodoCliente* aux = lista;
+		while (aux != NULL) {
+
+			cout <<"CLIENTE: " <<aux->info.idCliente <<" - MILLAS: " <<aux->info.millasAcumuladas<< endl;
+
+			aux = aux->sig;
+		}
+	}
+
+	//Busca y devuelve un puntero al nodoCliente
+	NodoCliente* buscarAgregarCliente(int id) {
+		NodoCliente* aux = lista;
+		while (aux != NULL) {
+
+			if (aux->info.idCliente == id) {
+				return aux;
+			}
+
+			aux = aux->sig;
+		}
+		
+		aux = lista;
+		while (aux->sig == NULL) {
+			aux = aux->sig;
+		}
+
+		InfoCliente* nuevoCliente = new InfoCliente();
+		nuevoCliente->idCliente = id;
+		nuevoCliente->millasAcumuladas = 0;
+
+		NodoCliente* nodo = new NodoCliente();
+		nodo->info = *nuevoCliente;
+		nodo->sig = NULL;
+		aux = nodo;
+
+		return aux;
+		
+	}
+};
+
+
+
+
+
+Reserva leerReserva() {
+	Reserva res;
+	cout << "Ingrese los datos de la reserva: IDCLIENTE - IDVUELO - CANTIDAD" << endl;
+	cin >> res.idCliente >> res.idVuelo >> res.cantidad;
+	return res;
+}
+
 
 
 int main()
 {
+
+	 /*
+	 *  Tengo los 2 archivos de consulta (Vuelos y ciudades) en memoria
+	 *	Leo las reservas (idcliente, idVuelo, cant)
+	 *		Conzco a mis clientes, y los ubico en una lista junto con sus vuelos
+	 *			En una lista de vuelos agrego los vuelos
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+
+	//Inicializo lista de clientes
+	TadListaClientes listaClientes;
+	listaClientes.lista = NULL;
+
+	TadListaCiudades ciudades;
+	TadVuelos vuelos ;
+
+
+	Reserva reserva = leerReserva();
+	while (reserva.idCliente > 0) {
+		
+		NodoVuelo* v = vuelos.buscarVuelo(reserva.idVuelo);
+
+		Ciudad ciudadOrigen = ciudades.buscarCiudad(v->info.vuelo.idOrigen);
+		Ciudad ciudadDestino = ciudades.buscarCiudad(v->info.vuelo.idDestino);
+
+
+
+
+		reserva = leerReserva();
+	}
+
+
 
 
 };
