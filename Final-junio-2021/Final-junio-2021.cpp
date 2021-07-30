@@ -1,4 +1,6 @@
+#define _CRT_SECURE_NO_DEPRECATE
 #include <iostream>
+
 using namespace std;
 
 template<typename T>
@@ -56,12 +58,14 @@ struct TadListados {
 			}
 			aux = aux->sig;
 		}
+		
 		return NULL;
 	}
 
 	void procesarResultado(Resultado resultado) {
 
 		Nodo<InfoEstadio>* estadio = buscarEstadio(resultado.estadio);
+
 		estadio->info.partidosJugados += 1;
 		if (resultadosJuego(resultado) > 0) {
 			//Alguien gano
@@ -84,8 +88,40 @@ struct TadListados {
 	}
 
 	void ordenarEquipos() {
+		
+	}
+
+	void imprimirPunto1() {
+		ordenarEquipos();
+
+		Nodo<Equipo>* aux = listaEquipos;
+		int contador = 1;
+		cout << "Pocisiones" << endl;
+		while (aux != NULL) {
+			
+			cout << contador << "- " << aux->info.nombre << endl;
+			contador ++;
+			aux = aux->sig;
+		}
 
 	}
+
+
+	void imprimirPunto2() {
+		ordenarEquipos();
+
+		Nodo<InfoEstadio>* aux = listaEstadios;
+		cout << "Pocisiones" << endl;
+		while (aux != NULL) {
+			cout << aux->info.estadio << endl;
+			cout <<"Partidos jugados" << aux->info.partidosJugados << endl;
+			cout << "Partidos empatados" << aux->info.partidosEmpatados << endl<< endl;
+			aux = aux->sig;
+		}
+
+	}
+
+
 };
 
 void cargarArchivoResultados() {
