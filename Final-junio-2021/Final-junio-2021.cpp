@@ -1,151 +1,89 @@
 // Final-junio-2021.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
 //
-
+#define _CRT_SECURE_NO_DEPRECATE
 #include <iostream>
 using namespace std;
 
-struct InfoLista
+
+
+struct Inscripcion{
+    int idAlumno;
+    int idCurso;
+
+    Inscripcion(int ia, int ic) {
+        idAlumno = ia;
+        idCurso = ic;
+    }
+};
+struct Curso
 {
-    int c1;
-    char c2;
-    float c3;
-    int c4;
-
-};
-struct NodoLista {
-    InfoLista infoLista;
-    NodoLista* sig;
-
-};
-
-struct InfoSubLista
-{
-    float campo3;
-    int campo4;
-
-
-};
-
-struct NodoSubLista
-{
-    InfoSubLista infSub;
-    NodoSubLista* sig;
-
-};
-
-struct InfoResult {
-    int c1;
-    char c2;
-    NodoSubLista* subLista;
-};
-
-struct NodoListaResult
-{
-    InfoResult info;
-    NodoListaResult* sig;
+    int idCurso;
+    char turno;
+    int capacidad;
+    string materia;
+    Curso() {
+    }
+    Curso(int id, char t, int c, string m) {
+        idCurso = id;
+        turno = t;
+        capacidad = c;
+        materia = m;
+    }
+    
 };
 
 
-InfoLista Pop(NodoLista* &lista) {
-    //Guardo valor que voy a devolver
-    InfoLista res = lista->infoLista;
+void escribirArhivoCursos() {
+    FILE* f = fopen("cursos.dat", "w+b");
+    Curso* c1 = new Curso(1, 'T', 4, "Algebra");
+    Curso* c2 = new Curso(2, 'T', 4, "Ingles");
+    Curso* c3 = new Curso(3, 'M', 5, "Ingles");
+    Curso* c4 = new Curso(4, 'M', 6, "Algebra");
+    Curso* c5 = new Curso(5, 'N', 2, "Algebra");
+    Curso* c6 = new Curso(6, 'M', 5, "Analisis");
+    Curso cursos[6] = {*c1,*c2,*c3,*c4,*c5,*c6};
 
-    //Guardo Lista en auxiliar
-    NodoLista* aux = lista;
-
-    //Lista ahora empieza en el siguiente
-    lista = aux->sig;
-
-    //Borro el que ya saque
-    delete aux;
-
-    return res;
+    fwrite(cursos, sizeof(Curso), 6, f);
+    fclose(f);
 }
 
+void escribirArhivoInscripcion() {
+    FILE* f = fopen("inscripcion.dat", "w+b");
 
-void InsertarSubNodo(NodoSubLista* lista, NodoSubLista* insert ) {
-    NodoSubLista* aux = lista;
-    while (aux->sig != NULL) {
-        aux = aux->sig;
-    }
-    aux->sig = insert;
+    Inscripcion* i1 = new Inscripcion(1, 6);
+    Inscripcion* i2 = new Inscripcion(2, 1);
+    Inscripcion* i3 = new Inscripcion(3, 5);
+    Inscripcion* i4 = new Inscripcion(4, 1);
+    Inscripcion* i5 = new Inscripcion(5, 4);
+    Inscripcion* i6 = new Inscripcion(6, 1);
+    Inscripcion* i7 = new Inscripcion(7, 1);
+    Inscripcion* i8 = new Inscripcion(8, 1);
+    Inscripcion* i11 = new Inscripcion(6, 2);
+    Inscripcion* i12 = new Inscripcion(7, 2);
+    Inscripcion* i13 = new Inscripcion(8, 2);
+    Inscripcion* i9 = new Inscripcion(9, 1);
+    Inscripcion* i10 = new Inscripcion(10, 1);
+    Inscripcion* i14 = new Inscripcion(6, 3);
+    Inscripcion* i15 = new Inscripcion(7, 3);
+    Inscripcion* i16 = new Inscripcion(8, 3);
+    Inscripcion* i17 = new Inscripcion(9, 3);
+    Inscripcion* i18 = new Inscripcion(10,2);
+
+    Inscripcion inscripciones[18] = { 
+        *i1,*i2,*i3,
+        *i4,*i5,*i6,*i7,*i8,*i9,*i10, 
+        *i11, *i12, *i13, *i14, *i15 , 
+        *i16, *i17, *i18 };
+
+    fwrite(inscripciones, sizeof(Inscripcion), 10, f);
+    fclose(f);
 }
-
-void InsertarSinRepetir(NodoListaResult* nlr, InfoResult infoInsert ) {
-    NodoListaResult* aux = nlr;
-    bool estaRepetido = false;
-    while (aux->sig != NULL ) {
-        estaRepetido = infoInsert.c1 == aux->info.c1 || infoInsert.c2 == aux->info.c2;
-
-        aux = aux->sig;
-    }
-    aux = nlr;
-    if (!estaRepetido) {
-        NodoListaResult* res = new NodoListaResult();
-        res->sig = NULL;
-        res->info = infoInsert;
-        aux->sig = res;
-    }
-
-}
-
-
-
-NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
-    NodoListaResult* nr = new NodoListaResult();
-    NodoListaResult* nraux = new NodoListaResult();
-    bool primerNodo = true;
-    while (lista->sig != NULL) {
-        InfoLista il = Pop(lista);
-        if (primerNodo) {
-            nr->info.c1 = il.c1;
-            nr->info.c2 = il.c2;
-            NodoSubLista* nsl = new NodoSubLista();
-            nsl->infSub.campo3 = il.c3;
-            nsl->infSub.campo4 = il.c4;
-            nr->info.subLista = nsl;
-            NodoListaResult* nraux = nr;
-        }
-        else {
-            InfoResult* infoR = new InfoResult();
-            infoR->c1 = il.c1;
-            infoR->c2 = il.c2;
-            NodoSubLista* ns = new NodoSubLista();
-            while (il.c1 == nraux->info.c1 && il.c2 == nraux->info.c2) {
-
-                InfoSubLista subInfo;
-                subInfo.campo3 = il.c3;
-                subInfo.campo4 = il.c4;
-                ns->infSub = subInfo;
-                ns->sig = NULL;
-
-                InsertarSubNodo(nr->info.subLista, ns);
-
-
-                nraux = nraux->sig;
-            }
-            infoR->subLista = ns;
-            InsertarSinRepetir(nr, *infoR);
-
-        }
-        
-    }
-
-
-    return nr;
-}
-
 
 int main()
 {
-    NodoLista* nl = new NodoLista();
-    InfoLista* il = new InfoLista();
-    il->c1 = 2;
-    il->c2 = 'C';
-    il->c3 = 2;
-    il->c4 = 32;
+    escribirArhivoCursos();
+    escribirArhivoInscripcion();
 
-    nl->infoLista = *il;
 
     
 
