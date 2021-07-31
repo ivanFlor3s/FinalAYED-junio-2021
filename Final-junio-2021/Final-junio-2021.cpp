@@ -4,6 +4,34 @@
 #include <iostream>
 using namespace std;
 
+template <typename T>
+struct Nodo {
+    T info;
+    Nodo<T>* sig;
+};
+
+template <typename T>
+void AgregarNodo(T info, Nodo<T>* &lista) {
+    
+    if (lista == NULL) {
+        lista = new Nodo<T>;
+        lista->info = info;
+        lista->sig = NULL;
+    }
+    else {
+        Nodo<T>* aux = lista;
+        while (aux->sig != NULL) {
+
+            aux = aux->sig;
+        }
+        Nodo<T>* nuevo = new Nodo<T>;
+        nuevo->info = info;
+        nuevo->sig = NULL;
+
+        aux->sig = nuevo;
+    }
+
+}
 
 
 struct Inscripcion{
@@ -21,17 +49,34 @@ struct Curso
     char turno;
     int capacidad;
     string materia;
-    Curso() {
-    }
+
     Curso(int id, char t, int c, string m) {
         idCurso = id;
         turno = t;
         capacidad = c;
         materia = m;
     }
+
+    Curso(){}
     
 };
 
+struct Materia {
+    Nodo<Curso>* listaCursos;
+    string cMateria;
+    int Inscriptos;
+};
+
+struct TadMaterias {
+    Nodo<Materia>* listaMaterias;
+};
+
+struct Alumno {
+    int idAlumno;
+    Nodo<string>* materiasRechazadas;
+
+    
+};
 
 void escribirArhivoCursos() {
     FILE* f = fopen("cursos.dat", "w+b");
@@ -79,13 +124,52 @@ void escribirArhivoInscripcion() {
     fclose(f);
 }
 
+struct TadCursos {
+
+    Nodo<Curso>* listaCursos = NULL;
+
+    void escribirArhivoCursos() {
+        FILE* f = fopen("cursos.dat", "w+b");
+        Curso* c1 = new Curso(1, 'T', 4, "Algebra");
+        Curso* c2 = new Curso(2, 'T', 4, "Ingles");
+        Curso* c3 = new Curso(3, 'M', 5, "Ingles");
+        Curso* c4 = new Curso(4, 'M', 6, "Algebra");
+        Curso* c5 = new Curso(5, 'N', 2, "Algebra");
+        Curso* c6 = new Curso(6, 'M', 5, "Analisis");
+        Curso cursos[6] = { *c1,*c2,*c3,*c4,*c5,*c6 };
+
+        fwrite(cursos, sizeof(Curso), 6, f);
+        fclose(f);
+    }
+
+    //Leer y guardar cursos en listaCursos
+    void leerArchivoCursos() {
+        FILE* f = fopen("cursos.dat", "r+b");
+        Curso* curso = new Curso();
+
+        fread(curso, sizeof(Curso), 1, f);
+        
+
+        while (!feof(f)) {
+            AgregarNodo<Curso>(*curso, listaCursos);
+            fread(curso, sizeof(Curso), 1, f);
+        }
+    }
+};
+
+
+
+
 int main()
 {
-    escribirArhivoCursos();
-    escribirArhivoInscripcion();
-
-
+    //escribirArhivoCursos();
+    //escribirArhivoInscripcion();
+    TadCursos tadCursos;
+    tadCursos.leerArchivoCursos();
     
+
+
+
 
     return 0;
 };
