@@ -11,12 +11,13 @@ struct Nodo {
 };
 
 template <typename T>
-void AgregarNodo(T info, Nodo<T>* &lista) {
+Nodo<T>* AgregarNodo(T info, Nodo<T>* &lista) {
     
     if (lista == NULL) {
         lista = new Nodo<T>;
         lista->info = info;
         lista->sig = NULL;
+        return lista;
     }
     else {
         Nodo<T>* aux = lista;
@@ -29,6 +30,7 @@ void AgregarNodo(T info, Nodo<T>* &lista) {
         nuevo->sig = NULL;
 
         aux->sig = nuevo;
+        return nuevo;
     }
 
 }
@@ -42,6 +44,8 @@ struct Inscripcion{
         idAlumno = ia;
         idCurso = ic;
     }
+    Inscripcion(){}
+    
 };
 struct Curso
 {
@@ -62,13 +66,46 @@ struct Curso
 };
 
 struct Materia {
-    Nodo<Curso>* listaCursos;
+    Nodo<Curso>* listaCursos = NULL;
     string cMateria;
-    int Inscriptos;
+    int Inscriptos = 0;
 };
 
 struct TadMaterias {
-    Nodo<Materia>* listaMaterias;
+    Nodo<Materia>* listaMaterias = NULL;
+
+    void AgregarCursoAMateria(Curso curso) {
+        Nodo<Materia>* aux = listaMaterias;
+       
+       
+            while (aux != NULL) {
+                if (aux->info.cMateria == curso.materia) {
+                    AgregarNodo<Curso>(curso, aux->info.listaCursos);
+                    return;
+                }
+
+                aux = aux->sig;
+
+            }
+            //No encontre la materia -> Creo la materia
+            Materia* materia = new Materia();
+            materia->cMateria = curso.materia;
+            AgregarNodo<Curso>(curso, materia->listaCursos);
+            
+            AgregarNodo<Materia>(*materia, listaMaterias);
+            return;
+        
+        
+    }
+
+    void CargarCursosEnMaterias(Nodo<Curso>* lista) {
+        Nodo<Curso>* aux = lista;
+        while (aux != NULL) {
+            AgregarCursoAMateria(aux->info);
+            aux = aux->sig;
+        }
+
+    }
 };
 
 struct Alumno {
@@ -76,6 +113,14 @@ struct Alumno {
     Nodo<string>* materiasRechazadas;
 
     
+};
+
+struct TadAlumnos
+{
+    Nodo<Alumno>* listaAlumnos;
+    int procesarInscripcion(Inscripcion inscripcion, TadMaterias tadMaterias ) {
+        //
+    }
 };
 
 void escribirArhivoCursos() {
@@ -165,9 +210,22 @@ int main()
     //escribirArhivoCursos();
     //escribirArhivoInscripcion();
     TadCursos tadCursos;
+    TadMaterias tadMaterias;
+    TadAlumnos tadAlumnos;
+    
     tadCursos.leerArchivoCursos();
     
+    tadMaterias.CargarCursosEnMaterias(tadCursos.listaCursos);
 
+    FILE* f = fopen("inscripcion.dat", "r+b");
+    Inscripcion* inscripcion = new Inscripcion();
+    fread(inscripcion, sizeof(Inscripcion), 1, f);
+
+    while (!feof(f)) {
+        tadAlumnos.procesarInscripcion(*inscripcion, tadMaterias);
+
+        fread(inscripcion, sizeof(Inscripcion), 1, f);
+    }
 
 
 
