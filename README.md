@@ -8,6 +8,11 @@ Tambien subi algunas cosas de punteros con comentarios
 * Resolucion
 * PDF con consigna
 
+## Final de Tickets Examen Final – 12/12/2018
+
+* Codigo compila OK
+* Resolucion
+* IMG con consigna (cuesta leer pero es lo que pude conseguir)
 
 ## AYE2018 (Integr) - Infracciones de tránsito
 Video de consigna y resolucion de Pablo:  [Video en youtube](https://www.youtube.com/watch?v=F_ikRFhRTv0&list=PLfvyG2RxJZsaiWvkM_Cat0obF3VSmo4UQ&index=24)
