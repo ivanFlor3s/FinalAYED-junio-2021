@@ -42,10 +42,48 @@ struct TadStack
             return content;
 
         }
-        return -1;
+        return NULL;
         
     }
 
+};
+
+template<typename T >
+struct TadCola
+{
+    Nodo<T>* cola = NULL;
+
+    void encolar(T nuevo) {
+        if (cola == NULL) {
+            cola = new Nodo<T>();
+            cola->info = nuevo;
+            cola->sig = NULL;
+            return;
+        }
+        else {
+            Nodo<T>* aux = cola;
+            while (aux->sig != NULL) {
+                aux = aux->sig;
+            }
+            aux->sig = new Nodo<T>();
+            aux->sig->info = nuevo;
+            aux->sig->sig = NULL;
+            return;
+
+        }
+    }
+
+    T desencolar() {
+        if (cola != NULL) {
+            T content = cola->info;
+            Nodo<T>* aux = cola;
+            cola = cola->sig;
+            delete(aux);
+
+            return content;
+        }
+        return NULL;
+    }
 };
 
 int main()
@@ -60,6 +98,15 @@ int main()
     stack.push(5);
 
     int primerPop = stack.pop();
+
+    TadCola<string> queue;
+    queue.encolar("Hola");
+    queue.encolar("Como");
+    queue.encolar("Estas");
+
+    string s = queue.desencolar();
+    string s2 = queue.desencolar();
+    string s3 = queue.desencolar();
     return 0;
 };
 
