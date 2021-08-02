@@ -11,6 +11,17 @@ struct Nodo {
 };
 
 template <typename T>
+Nodo<T>* buscarNodo(int id, bool *criterio, Nodo<T>* lista) {
+    Nodo<T>* aux = lista;
+    while (aux != NULL) {
+        if (criterio(aux, id)) {
+            return aux;
+        }
+        aux = aux->sig;
+    }
+}
+
+template <typename T>
 Nodo<T>* AgregarNodo(T info, Nodo<T>* &lista) {
     
     if (lista == NULL) {
@@ -64,23 +75,56 @@ struct Curso
     Curso(){}
     
 };
+struct CupoCurso {
+    int idCurso;
+    int inscriptos;
+    CupoCurso(int id) {
+        idCurso = id;
+        inscriptos = 0;
+    }
+};
 
 struct Materia {
     Nodo<Curso>* listaCursos = NULL;
+    
     string cMateria;
     int Inscriptos = 0;
+
+    Curso getCurso(int idCurso) {
+        Nodo<Curso>* aux = listaCursos;
+        while (aux != NULL) {
+            if (aux->info.idCurso == idCurso) {
+                return aux->info;
+            }
+            aux = aux->sig;
+        }
+    }
 };
 
 struct TadMaterias {
     Nodo<Materia>* listaMaterias = NULL;
+    Nodo<CupoCurso>* listaCupos = NULL;
 
+    Nodo<CupoCurso>* buscarCupoCurso(int idCurso) {
+        Nodo<CupoCurso>* aux = listaCupos;
+
+        while (aux != NULL) {
+            if (aux->info.idCurso == idCurso) {
+                return aux;
+            }
+
+            aux = aux->sig;
+        }
+    }
     void AgregarCursoAMateria(Curso curso) {
+        AgregarNodo<CupoCurso>(*new CupoCurso(curso.idCurso), listaCupos);
         Nodo<Materia>* aux = listaMaterias;
        
        
             while (aux != NULL) {
                 if (aux->info.cMateria == curso.materia) {
                     AgregarNodo<Curso>(curso, aux->info.listaCursos);
+                    
                     return;
                 }
 
@@ -97,6 +141,22 @@ struct TadMaterias {
         
         
     }
+    Nodo<Materia>* buscarMateriaConIdCurso(int idCurso) {
+        Nodo<Materia>* aux = listaMaterias;
+        while (aux != NULL) {
+            Nodo<Curso>* auxCurso = aux->info.listaCursos;
+            while (auxCurso != NULL) {
+                if (auxCurso->info.idCurso == idCurso)
+                {
+                    return aux;
+                }
+                auxCurso = auxCurso->sig;
+            }
+            
+            aux = aux->sig;
+
+        }
+    }
 
     void CargarCursosEnMaterias(Nodo<Curso>* lista) {
         Nodo<Curso>* aux = lista;
@@ -106,20 +166,86 @@ struct TadMaterias {
         }
 
     }
+
+    void ImprimirPunto2() {
+        Nodo<Materia>* aux = listaMaterias;
+
+        
+        
+        while (aux != NULL) {
+            Nodo<Curso>* auxCurso = aux->info.listaCursos;
+            cout << "Materia libre " << aux->info.cMateria << endl;
+            while (auxCurso != NULL) {
+                Nodo<CupoCurso>* ncc = buscarCupoCurso(auxCurso->info.idCurso);
+                if (auxCurso->info.capacidad >= ncc->info.inscriptos) {
+                    cout << "Curso con cupos: " << ncc->info.idCurso << endl;
+                }
+                auxCurso = auxCurso->sig;
+            }
+            
+            aux = aux->sig;
+        }
+    }
 };
 
 struct Alumno {
     int idAlumno;
     Nodo<string>* materiasRechazadas;
 
+    Alumno(int id) {
+        idAlumno = id;
+        materiasRechazadas = NULL;
+    }
     
 };
 
 struct TadAlumnos
 {
     Nodo<Alumno>* listaAlumnos;
+
+    Nodo<Alumno>* buscarAlumno(int idAlumno) {
+        Nodo<Alumno>* aux = listaAlumnos;
+        while (aux != NULL) {
+            if (aux->info.idAlumno == idAlumno) {
+                return aux;
+            }
+            aux = aux->sig;
+        }
+        return NULL;
+    }
+
     int procesarInscripcion(Inscripcion inscripcion, TadMaterias tadMaterias ) {
-        //
+        Nodo<Materia>* nodoMateria = tadMaterias.buscarMateriaConIdCurso(inscripcion.idCurso);
+        Curso c = nodoMateria->info.getCurso(inscripcion.idCurso);
+        Nodo<CupoCurso>* ncc = tadMaterias.buscarCupoCurso(inscripcion.idCurso);
+        if (c.capacidad == ncc->info.inscriptos) {
+            //Se rechaza por falta de capacidad
+            Nodo<Alumno>* na = buscarAlumno(inscripcion.idAlumno);
+            if (na == NULL) {
+                na = AgregarNodo<Alumno>(*new Alumno(inscripcion.idAlumno), listaAlumnos);
+                
+            }
+            AgregarNodo<string>(c.materia, na->info.materiasRechazadas);
+        }
+        else {
+            ncc->info.inscriptos += 1;
+            nodoMateria->info.Inscriptos += 1;
+        }
+    }
+
+    void inprimirPunto1() {
+        Nodo<Alumno>* aux = listaAlumnos;
+        while (aux != NULL) {
+            cout << "El alumno: " << aux->info.idAlumno << " - Tiene materias rechazadas" << endl;
+            if (aux->info.materiasRechazadas != NULL) {
+                Nodo<string> *auxRechazadas = aux->info.materiasRechazadas;
+                while (auxRechazadas != NULL) {
+                    cout << auxRechazadas->info << endl;
+                    auxRechazadas = auxRechazadas->sig;
+                }
+            }
+            aux = aux->sig;
+        }
     }
 };
 
@@ -228,6 +354,8 @@ int main()
     }
 
 
+    tadAlumnos.inprimirPunto1();
+    tadMaterias.ImprimirPunto2();
 
     return 0;
 };
