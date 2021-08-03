@@ -4,150 +4,106 @@
 #include <iostream>
 using namespace std;
 
-struct InfoLista
-{
-    int c1;
-    char c2;
-    float c3;
-    int c4;
-
-};
-struct NodoLista {
-    InfoLista infoLista;
-    NodoLista* sig;
-
+template<typename T>
+struct Nodo {
+    T info;
+    Nodo<T> sig;
 };
 
-struct InfoSubLista
-{
-    float campo3;
-    int campo4;
-
-
+struct Ilicito {
+    string patente;
+    string delito;
+    int horaIlicito;
 };
 
-struct NodoSubLista
-{
-    InfoSubLista infSub;
-    NodoSubLista* sig;
+struct Recorrido {
+    int idZona;
+    int horaRegistro;
+    bool vale;
 
-};
-
-struct InfoResult {
-    int c1;
-    char c2;
-    NodoSubLista* subLista;
-};
-
-struct NodoListaResult
-{
-    InfoResult info;
-    NodoListaResult* sig;
-};
-
-
-InfoLista Pop(NodoLista* &lista) {
-    //Guardo valor que voy a devolver
-    InfoLista res = lista->infoLista;
-
-    //Guardo Lista en auxiliar
-    NodoLista* aux = lista;
-
-    //Lista ahora empieza en el siguiente
-    lista = aux->sig;
-
-    //Borro el que ya saque
-    delete aux;
-
-    return res;
-}
-
-
-void InsertarSubNodo(NodoSubLista* lista, NodoSubLista* insert ) {
-    NodoSubLista* aux = lista;
-    while (aux->sig != NULL) {
-        aux = aux->sig;
+    Recorrido(int id, int h, bool v) {
+        idZona = id;
+        horaRegistro = h;
+        vale = v;
     }
-    aux->sig = insert;
-}
+};
 
-void InsertarSinRepetir(NodoListaResult* nlr, InfoResult infoInsert ) {
-    NodoListaResult* aux = nlr;
-    bool estaRepetido = false;
-    while (aux->sig != NULL ) {
-        estaRepetido = infoInsert.c1 == aux->info.c1 || infoInsert.c2 == aux->info.c2;
+struct VehiculoSospechoso {
+    string patente;
+    string delito;
+    Nodo<Recorrido>* listaRecorrido;
+};
 
-        aux = aux->sig;
+struct BusquedaPatenteDelito {
+    string patente;
+    string delito;
+    BusquedaPatenteDelito(string p, string d) {
+        patente = p;
+        delito = d;
     }
-    aux = nlr;
-    if (!estaRepetido) {
-        NodoListaResult* res = new NodoListaResult();
-        res->sig = NULL;
-        res->info = infoInsert;
-        aux->sig = res;
-    }
+};
 
-}
+struct TadZona
+{
+    Nodo<Recorrido>* listaRecorridos;
+    int nroZona;
 
-
-
-NodoListaResult* CargarListaDeListas(NodoLista* &lista) {
-    NodoListaResult* nr = new NodoListaResult();
-    NodoListaResult* nraux = new NodoListaResult();
-    bool primerNodo = true;
-    while (lista->sig != NULL) {
-        InfoLista il = Pop(lista);
-        if (primerNodo) {
-            nr->info.c1 = il.c1;
-            nr->info.c2 = il.c2;
-            NodoSubLista* nsl = new NodoSubLista();
-            nsl->infSub.campo3 = il.c3;
-            nsl->infSub.campo4 = il.c4;
-            nr->info.subLista = nsl;
-            NodoListaResult* nraux = nr;
-        }
-        else {
-            InfoResult* infoR = new InfoResult();
-            infoR->c1 = il.c1;
-            infoR->c2 = il.c2;
-            NodoSubLista* ns = new NodoSubLista();
-            while (il.c1 == nraux->info.c1 && il.c2 == nraux->info.c2) {
-
-                InfoSubLista subInfo;
-                subInfo.campo3 = il.c3;
-                subInfo.campo4 = il.c4;
-                ns->infSub = subInfo;
-                ns->sig = NULL;
-
-                InsertarSubNodo(nr->info.subLista, ns);
-
-
-                nraux = nraux->sig;
-            }
-            infoR->subLista = ns;
-            InsertarSinRepetir(nr, *infoR);
-
-        }
+    //Armar los recorridos del auto buscado en la zona. Se devuelve la lista de recorrido
+    void BuscarRecorridoIlicito(string patente, string delito, Nodo<Recorrido>* &lista, int horaIlicito) {
+        Nodo<Recorrido>* aux = listaRecorridos;
         
+         aux = buscar(listaRecorridos, *new BusquedaPatenteDelito(patente, delito));
+        while (aux != NULL) {
+            Recorrido* rec = new Recorrido(nroZona, aux->info.horaRegistro, true);
+            if (rec->horaRegistro > horaIlicito) {
+
+                insertarOrdenado<Recorrido>(lista, *rec);
+            }
+            else
+            {
+                //El valor de vale, es verdadero cuando el registro es posterior al ilicito
+                rec->vale = false;
+                inserterOrdenado<Recorrido>(lista, *rec);
+            }
+            aux = buscar(aux, *new BusquedaPatenteDelito(patente, delito));
+        }
     }
 
+};
 
-    return nr;
+Nodo<Recorrido>* Reordenar(Nodo<Recorrido>* listaRec) {
+    Nodo<Recorrido>* nuevaLista = NULL;
+    Nodo<Recorrido>* aux = listaRec;
+    while (aux != NULL) {
+        insertarOrdenado<Recorrido>(listaRec, aux->info);
+        aux = aux->sig;
+    }
+
+    return nuevaLista;
 }
 
+VehiculoSospechoso recorrido(TadZona zonas[10], string patenteBusq, string delito,int  horaIlicito) {
+    VehiculoSospechoso* resp = new VehiculoSospechoso();
+
+    resp->delito = delito;
+    resp->patente = patenteBusq;
+    Nodo<Recorrido>* listRecorrido;
+    for (int i = 0; i < 10; i++) {
+        zonas[i].BuscarRecorridoIlicito(patenteBusq, delito, listRecorrido, horaIlicito);
+    }
+    resp->listaRecorrido = Reordenar(listRecorrido);
+
+    return *resp;
+}
 
 int main()
 {
-    NodoLista* nl = new NodoLista();
-    InfoLista* il = new InfoLista();
-    il->c1 = 2;
-    il->c2 = 'C';
-    il->c3 = 2;
-    il->c4 = 32;
+    TadZona zonas[10];
 
-    nl->infoLista = *il;
+    //Invocacion de la funcion
+    VehiculoSospechoso resp = recorrido(zonas, "DSA89321", "Ir a 120 en avenida",390213);
+   
 
-    
 
     return 0;
 };
